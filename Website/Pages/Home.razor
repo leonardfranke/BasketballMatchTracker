@@ -1,0 +1,34 @@
+﻿@page "/"
+@inherits HomeBase
+@using LeafletForBlazor
+@using MudBlazor
+
+<MudBlazor.MudGrid>
+    <MudItem xs="4">
+        <MudBlazor.MudNumericField Label="Postleitzahl" @bind-Value="PostalCode"></MudBlazor.MudNumericField>
+    </MudItem>
+    <MudItem xs="4">
+        <MudBlazor.MudNumericField Label="Maximale Entfernung (km)" @bind-Value="Radius"></MudBlazor.MudNumericField>
+    </MudItem>
+    <MudItem xs="4">
+        <MudDateRangePicker @bind-DateRange="DateRange"/>
+    </MudItem>
+</MudBlazor.MudGrid>
+<MudBlazor.MudButton @onclick="SearchMatches">Suchen</MudBlazor.MudButton>
+
+<MudBlazor.MudProgressLinear Indeterminate="IsLoading"/>
+<RealTimeMap @ref="Map" height="400px"></RealTimeMap>
+
+<MudDataGrid Items="Matches">
+    <Columns>
+        <PropertyColumn Title="Liga" Property="match => match.Liganame" />
+        <PropertyColumn Title="Heimmannschaft" Property="match => match.Heimmannschaft" />
+        <PropertyColumn Title="Gastmannschaft" Property="match => match.Gastmannschaft" />
+        <PropertyColumn Title="Tipoff" Property="match => match.Tipoff">
+            <CellTemplate>
+                @context.Item.Tipoff.ToString("HH:mm 'Uhr' dd.MM.yy")
+            </CellTemplate>
+        </PropertyColumn>
+        <PropertyColumn Title="Adresse" Property="match => match.Adresse" />
+    </Columns>
+</MudDataGrid>
