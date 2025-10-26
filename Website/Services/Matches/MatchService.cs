@@ -23,7 +23,7 @@ namespace Website.Services.Matches
                 DateFrom = dateFrom,
                 DateTo = dateTo
             };
-            var response = await _httpClient.PostAsJsonAsync(new Uri("match", UriKind.Relative), query);
+            var response = await _httpClient.PostAsJsonAsync(new Uri("api/match", UriKind.Relative), query);
             return await response.Content.ReadFromJsonAsync<List<MatchDTO>>();
         }
     }

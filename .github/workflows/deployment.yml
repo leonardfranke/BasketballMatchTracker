@@ -53,7 +53,7 @@ jobs:
 
       - name: Replace backend address
         run: |
-          sed -i 's|"BACKEND_ADDRESS": ".*"|"BACKEND_ADDRESS": "${{ needs.deploy_backend.outputs.backend-url }}"|' 'Web/wwwroot/appsettings.json'
+          sed -i 's|"BACKEND_ADDRESS": ".*"|"BACKEND_ADDRESS": "${{ needs.deploy_backend.outputs.backend-url }}"|' 'Website/wwwroot/appsettings.json'
 
       - name: Publish 
         run: dotnet publish Web/Web.csproj -c Release -o Web/out --no-restore
