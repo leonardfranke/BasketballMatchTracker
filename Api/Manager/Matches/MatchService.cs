@@ -16,7 +16,7 @@ namespace Api.Manager
         public MatchManager(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _geocodingKey = Environment.GetEnvironmentVariable("MatchTracker_MapsKey");
+            _geocodingKey = Environment.GetEnvironmentVariable("MATCHTRACKER_MAPSKEY");
         }
 
         public async Task<List<MatchDTO>> SearchMatches(int postalCode, int radius, DateTime dateFrom, DateTime dateTo)
