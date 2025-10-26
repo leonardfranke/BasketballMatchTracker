@@ -16,32 +16,13 @@ builder.Services.AddScoped(sp =>
     return client;
 });
 
-if(builder.Environment.IsDevelopment())
+builder.Services.AddCors(options =>
 {
-    builder.Services.AddCors(options =>
+    options.AddDefaultPolicy(policy =>
     {
-        options.AddDefaultPolicy(policy =>
-        {
-            policy
-                .SetIsOriginAllowed(origin => new Uri(origin).IsLoopback)        
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-        });
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
-}
-else if(builder.Environment.IsProduction())
-{
-    builder.Services.AddCors(options =>
-    {
-        options.AddDefaultPolicy(policy =>
-        {
-            policy//.WithOrigins("https://matchtracker-476209.web.app")
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-        });
-    });
-}
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
