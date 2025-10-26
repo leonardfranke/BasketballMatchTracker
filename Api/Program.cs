@@ -35,7 +35,7 @@ else if(builder.Environment.IsProduction())
     {
         options.AddDefaultPolicy(policy =>
         {
-            policy.WithOrigins("https://matchtracker-476209.web.app/")
+            policy.WithOrigins("https://matchtracker-476209.web.app")
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         });
