@@ -1,0 +1,65 @@
+name: Deploy website and backend
+on: workflow_dispatch
+
+jobs:              
+  deploy_backend:   
+    runs-on: ubuntu-latest
+    outputs: 
+      backend-url: ${{ steps.backend-deployment.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCLOUD_SERVICE_ACCOUNT_EINSATZPLANER }}'
+
+      - name: Collect required files for deployment
+        run: |
+          mkdir deploy
+          cp -r Api deploy/Api
+          cp -r DTO deploy/DTO
+
+      - uses: 'google-github-actions/deploy-cloudrun@v2'
+        id: backend-deployment
+        with:
+          service: backend
+          region: europe-west1
+          source: deploy
+          secrets: |-
+            MATCHTRACKER_MAPSKEY=MATCHTRACKER_MAPSKEY:latest
+          flags: '--allow-unauthenticated --no-cpu-boost --cpu-throttling --max-instances=1 --min=0 --min-instances=0 --cpu=0.08 --memory=256Mi --port=8080'
+
+      - run: gcloud artifacts docker images delete europe-west1-docker.pkg.dev/einsatzplaner/cloud-run-source-deploy/einsatzplaner --quiet
+
+  deploy_frontend:
+    runs-on: ubuntu-latest
+    needs: [deploy_backend]
+    if: ${{ success() }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .Net
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Replace base path
+        run: |
+          sed -i 's|<base href=".*"|<base href="${{vars.BASE_PATH}}"|' 'Web/wwwroot/index.html'
+
+      - name: Replace backend address
+        run: |
+          sed -i 's|"BACKEND_ADDRESS": ".*"|"BACKEND_ADDRESS": "${{ needs.deploy_backend.outputs.backend-url }}"|' 'Web/wwwroot/appsettings.json'
+
+      - name: Publish 
+        run: dotnet publish Web/Web.csproj -c Release -o Web/out --no-restore
+      
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_EINSATZPLANER }}
+          channelId: live
+          projectId: einsatzplaner
