@@ -47,9 +47,9 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Replace base path
-        run: |
-          sed -i 's|<base href=".*"|<base href="${{vars.BASE_PATH}}"|' 'Web/wwwroot/index.html'
+      # - name: Replace base path
+      #   run: |
+      #     sed -i 's|<base href=".*"|<base href="${{vars.BASE_PATH}}"|' 'Web/wwwroot/index.html'
 
       - name: Replace backend address
         run: |
