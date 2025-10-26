@@ -56,11 +56,11 @@ jobs:
           sed -i 's|"BACKEND_ADDRESS": ".*"|"BACKEND_ADDRESS": "${{ needs.deploy_backend.outputs.backend-url }}"|' 'Website/wwwroot/appsettings.json'
 
       - name: Publish 
-        run: dotnet publish Web/Web.csproj -c Release -o Web/out --no-restore
+        run: dotnet publish Website/Website.csproj -c Release -o Website/out --no-restore
       
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_EINSATZPLANER }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           channelId: live
-          projectId: einsatzplaner
+          projectId: matchtracker-476209
