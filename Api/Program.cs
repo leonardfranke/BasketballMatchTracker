@@ -35,14 +35,15 @@ else if(builder.Environment.IsProduction())
     {
         options.AddDefaultPolicy(policy =>
         {
-            policy.WithOrigins("https://matchtracker-476209.web.app")
+            policy//.WithOrigins("https://matchtracker-476209.web.app")
+                .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         });
     });
 }
 
-    builder.Services.AddControllers();
+builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
