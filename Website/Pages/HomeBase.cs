@@ -22,7 +22,7 @@ namespace Website.Pages
         {
             var differenceToFriday = DayOfWeek.Saturday - DateTime.Today.DayOfWeek;
             var dateFrom = DateTime.Today.AddDays(differenceToFriday);
-            var dateTo = dateFrom.AddDays(8);
+            var dateTo = dateFrom.AddDays(1);
             DateRange = new DateRange(dateFrom, dateTo);
         }
 
