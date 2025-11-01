@@ -18,7 +18,7 @@ namespace Api.Controllers
         [HttpPost]
         public Task<List<MatchDTO>> SearchMatches([FromBody] SearchMatchesDTO searchMatchesDTO)
         {
-            return _matchManager.SearchMatches(searchMatchesDTO.PostalCode, searchMatchesDTO.Radius, searchMatchesDTO.DateFrom, searchMatchesDTO.DateTo);
+            return _matchManager.SearchMatches(searchMatchesDTO.PlaceId, searchMatchesDTO.Radius, searchMatchesDTO.DateFrom, searchMatchesDTO.DateTo);
         }
     }
 }

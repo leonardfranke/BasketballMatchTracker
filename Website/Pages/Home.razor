@@ -2,19 +2,22 @@
 @inherits HomeBase
 @using LeafletForBlazor
 @using MudBlazor
+@using Website.View
 
 <MudBlazor.MudGrid>
-    <MudItem xs="4">
-        <MudBlazor.MudNumericField Label="Postleitzahl" @bind-Value="PostalCode"></MudBlazor.MudNumericField>
+    <MudItem xs="8" md="3">
+        <LocationAutocomplete LocationChangedFunc="place => Place = place"></LocationAutocomplete>
     </MudItem>
-    <MudItem xs="4">
+    <MudItem xs="4" md="3">
         <MudBlazor.MudNumericField Label="Maximale Entfernung (km)" @bind-Value="Radius"></MudBlazor.MudNumericField>
     </MudItem>
-    <MudItem xs="4">
+    <MudItem xs="8" md="4">
         <MudDateRangePicker @bind-DateRange="DateRange"/>
     </MudItem>
+    <MudItem xs="4" md="2">
+        <MudBlazor.MudButton Variant="Variant.Filled" @onclick="SearchMatches">Suchen</MudBlazor.MudButton>
+    </MudItem>
 </MudBlazor.MudGrid>
-<MudBlazor.MudButton @onclick="SearchMatches">Suchen</MudBlazor.MudButton>
 
 <MudBlazor.MudProgressLinear Indeterminate="IsLoading"/>
 <RealTimeMap @ref="Map" height="400px"></RealTimeMap>

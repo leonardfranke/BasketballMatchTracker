@@ -1,7 +1,9 @@
 using Api.Manager;
+using Api.Manager.Maps;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSingleton<IMapsManager, MapsManager>();
 builder.Services.AddScoped<IMatchManager, MatchManager>();
 builder.Services.AddScoped(sp =>
 {

@@ -4,6 +4,6 @@ namespace Api.Manager
 {
     public interface IMatchManager
     {
-        public Task<List<MatchDTO>> SearchMatches(int postalCode, int radius, DateTime dateFrom, DateTime dateTo);
+        public Task<List<MatchDTO>> SearchMatches(string placeId, int radius, DateTime dateFrom, DateTime dateTo);
     }
 }

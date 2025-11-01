@@ -2,6 +2,7 @@
 using DTO;
 using GoogleApi.Entities.Common.Enums;
 using GoogleApi.Entities.Maps.Geocoding.Address.Request;
+using GoogleApi.Entities.PlacesNew.Details.Request;
 using System.Text;
 using System.Text.Json;
 
@@ -10,23 +11,24 @@ namespace Api.Manager
     public class MatchManager : IMatchManager
     {
         private HttpClient _httpClient;
-        private string _geocodingKey;
+        private string _mapsKey;
         private Dictionary<int, Task<(double, double)>> _locationQueries = [];
 
         public MatchManager(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _geocodingKey = Environment.GetEnvironmentVariable("MATCHTRACKER_MAPSKEY");
+            _mapsKey = Environment.GetEnvironmentVariable("MATCHTRACKER_MAPS_KEY");
         }
 
-        public async Task<List<MatchDTO>> SearchMatches(int postalCode, int radius, DateTime dateFrom, DateTime dateTo)
+        public async Task<List<MatchDTO>> SearchMatches(string placeId, int radius, DateTime dateFrom, DateTime dateTo)
         {
+            var postalCode = await GetPostalCode(placeId);
             var payload = new
             {
                 akGruppeIdList = new List<int> { },
                 fromDate = dateFrom.ToString("yyyy-MM-dd"),
                 gIdList = new List<int> { },
-                spielfeldPlz = postalCode.ToString(),
+                spielfeldPlz = postalCode,
                 spielfeldUmkreis = radius*1000,
                 startAtIndex = 0,
                 toDate = dateTo.AddDays(1).ToString("yyyy-MM-dd")
@@ -74,7 +76,7 @@ namespace Api.Manager
                 Address = query,
                 Region = "DE",                
                 Language = Language.German,
-                Key = _geocodingKey                
+                Key = _mapsKey                
             };
 
             var queryTask = GoogleApi.GoogleMaps.Geocode.AddressGeocode.QueryAsync(request).ContinueWith(async task =>
@@ -85,6 +87,22 @@ namespace Api.Manager
             }).Unwrap();
             _locationQueries.Add(queryKey, queryTask);
             return queryTask;
+        }
+
+        public async Task<string> GetPostalCode(string placeId)
+        {
+            var request = new PlacesNewDetailsRequest
+            {
+                Language = Language.German,
+                Key = _mapsKey,
+                PlaceId = placeId,
+                FieldMask = "addressComponents"
+            };
+            var response = await GoogleApi.GooglePlacesNew.Details.QueryAsync(request);
+            var postalCode = response.Place.AddressComponents
+                .First(component => component.Types.Any(type => type == AddressComponentType.Postal_Code))
+                .LongText;
+            return postalCode;
         }
     }
 }

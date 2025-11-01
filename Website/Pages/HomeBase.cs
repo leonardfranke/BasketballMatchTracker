@@ -14,7 +14,7 @@ namespace Website.Pages
         public List<MatchDTO> Matches { get; set; }
 
         public bool IsLoading { get; set; }
-        public int PostalCode { get; set; } = 49196;
+        public PlacesAutocompleteDTO Place { get; set; }
         public int Radius { get; set; } = 30;
         public DateRange DateRange { get; set; }
 
@@ -29,7 +29,7 @@ namespace Website.Pages
         public async Task SearchMatches()
         {
             IsLoading = true;
-            var matches = await MatchService.SearchMatches(PostalCode, Radius, DateRange.Start.Value, DateRange.End.Value);
+            var matches = await MatchService.SearchMatches(Place.PlaceId, Radius, DateRange.Start.Value, DateRange.End.Value);
             //foreach(var match in matches)
             //{
             //    await Map.Geometric.Points.([match.Latitude, match.Longitude], new RealTimeMap.PointTooltip

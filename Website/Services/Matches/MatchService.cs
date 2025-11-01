@@ -1,7 +1,5 @@
 ﻿using DTO;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
 
 namespace Website.Services.Matches
 {
@@ -14,11 +12,11 @@ namespace Website.Services.Matches
             _httpClient = httpClientFactory.CreateClient("BACKEND");
         }
 
-        public async Task<List<MatchDTO>> SearchMatches(int postalCode, int radius, DateTime dateFrom, DateTime dateTo)
+        public async Task<List<MatchDTO>> SearchMatches(string placeId, int radius, DateTime dateFrom, DateTime dateTo)
         {
             var query = new SearchMatchesDTO
             {
-                PostalCode = postalCode,
+                PlaceId = placeId,
                 Radius = radius,
                 DateFrom = dateFrom,
                 DateTo = dateTo
